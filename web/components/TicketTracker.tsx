@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api, type Stats, type Status, type TicketPage } from "@/lib/api";
+import NewTicketForm from "./NewTicketForm";
 import StatsBar from "./StatsBar";
 import TicketList from "./TicketList";
 
@@ -52,6 +53,12 @@ export default function TicketTracker() {
         </div>
       )}
       <StatsBar stats={stats} />
+      <NewTicketForm
+        onCreated={() => {
+          setPage(1);
+          refresh();
+        }}
+      />
       <TicketList
         tickets={tickets}
         filter={filter}
