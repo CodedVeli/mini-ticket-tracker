@@ -1,5 +1,6 @@
 import express from "express";
 import { errorHandler, HttpError } from "./errors";
+import { ticketsRouter } from "./tickets/routes";
 
 export const app = express();
 
@@ -8,6 +9,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
+
+app.use("/tickets", ticketsRouter);
 
 app.use(() => {
   throw new HttpError(404, "Not found");
