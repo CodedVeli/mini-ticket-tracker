@@ -34,7 +34,7 @@ npm run dev
 
 Open http://localhost:3000.
 
-Postgres is exposed on host port **5435** to avoid clashing with a local Postgres on 5432. All settings have working defaults; override them with environment variables if needed:
+Postgres is exposed on host port **5435** to avoid clashing with a local Postgres on 5432. All settings have working defaults, so no `.env` file is required. To override them, copy `server/.env.example` to `server/.env` and/or `web/.env.example` to `web/.env`, or set environment variables:
 
 | Variable | Used by | Default |
 |---|---|---|
