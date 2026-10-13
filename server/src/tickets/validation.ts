@@ -19,5 +19,15 @@ export const listQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),
 });
 
+export const updateTicketSchema = z
+  .strictObject({
+    status: z.enum(STATUSES).optional(),
+    priority: z.enum(PRIORITIES).optional(),
+  })
+  .refine((body) => body.status || body.priority, { message: "Provide status or priority" });
+
+export const ticketIdSchema = z.uuid();
+
 export type CreateTicketInput = z.infer<typeof createTicketSchema>;
 export type ListQuery = z.infer<typeof listQuerySchema>;
+export type UpdateTicketInput = z.infer<typeof updateTicketSchema>;

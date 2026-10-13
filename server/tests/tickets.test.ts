@@ -55,3 +55,43 @@ describe("GET /tickets", () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe("GET /tickets/stats", () => {
+  it("counts tickets per status, including empty ones", async () => {
+    await createTicket({ title: "a" });
+    await createTicket({ title: "b" });
+    await createTicket({ title: "c", status: "closed" });
+
+    const res = await request(app).get("/tickets/stats");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ open: 2, in_progress: 0, closed: 1 });
+  });
+});
+
+describe("PATCH /tickets/:id", () => {
+  it("updates status and leaves priority alone", async () => {
+    const { body: ticket } = await createTicket({ title: "a", priority: "high" });
+
+    const res = await request(app).patch(`/tickets/${ticket.id}`).send({ status: "in_progress" });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ id: ticket.id, status: "in_progress", priority: "high" });
+  });
+
+  it("requires status or priority", async () => {
+    const { body: ticket } = await createTicket({ title: "a" });
+    const res = await request(app).patch(`/tickets/${ticket.id}`).send({});
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 404 for an unknown id and 400 for a malformed one", async () => {
+    const unknown = await request(app)
+      .patch("/tickets/00000000-0000-4000-8000-000000000000")
+      .send({ status: "closed" });
+    expect(unknown.status).toBe(404);
+
+    const malformed = await request(app).patch("/tickets/not-a-uuid").send({ status: "closed" });
+    expect(malformed.status).toBe(400);
+  });
+});
